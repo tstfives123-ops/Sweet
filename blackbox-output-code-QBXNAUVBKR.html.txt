@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Samosa Junction - Crispy Outside, Legendary Inside</title>
+    <meta name="description" content="India's favourite handmade samosas. Fresh ingredients, authentic recipes, 25+ varieties. Order now from Bardhaman!">
+    <meta name="keywords" content="samosa, handmade samosa, Bardhaman, West Bengal, Indian snacks, samosa delivery, crispy samosa">
+    
+    <!-- Open Graph / SEO -->
+    <meta property="og:title" content="Samosa Junction - India's Favourite Handmade Samosas">
+    <meta property="og:description" content="Crispy outside, legendary inside. Freshly made daily with authentic recipes. Order now!">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?w=1200">
+    <meta property="og:url" content="https://samosajunction.com">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        "name": "Samosa Junction",
+        "description": "Premium handmade samosas in Bardhaman, West Bengal",
+        "telephone": "+919876543210",
+        "email": "hello@samosajunction.com",
+        "url": "https://samosajunction.com",
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "GT Road",
+            "addressLocality": "Bardhaman",
+            "addressRegion": "West Bengal",
+            "postalCode": "713101",
+            "addressCountry": "IN"
+        },
+        "image": "https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?w=1200",
+        "priceRange": "₹"
+    }
+    </script>
+
+    <!-- Tailwind CSS + React + Framer Motion -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.skypack.dev/framer-motion@10"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,500&display=swap');
+        
+        * { 
+            font-family: 'Poppins', sans-serif; 
+            scroll-behavior: smooth;
+        }
+        
+        /* Custom Colors */
+        .saffron { color: #FF7B00; }
+        .saffron-bg { background: linear-gradient(135deg, #FF9933 0%, #FF7B00 50%, #E65C00 100%); }
+        .cream-bg { background: linear-gradient(135deg, #FFF8E1 0%, #FFECB3 50%, #FFE082 100%); }
+        .gold-glow { box-shadow: 0 25px 50px -12px rgba(255, 193, 7, 0.4); }
+        .glass { backdrop-filter: blur(20px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); }
+        
+        /* Indian Pattern */
+        .indian-pattern {
+            background-image: 
+                radial-gradient(circle at 25% 25%, #FF99330F 2px, transparent 2px),
+                radial-gradient(circle at 75% 75%, #FF7B000F 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+        
+        /* Animations */
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+        .float { animation: float 4s ease-in-out infinite; }
+        @keyframes glow { 0% { box-shadow: 0 0 20px rgba(255,121,0,0.3); } 100% { box-shadow: 0 0 40px rgba(255,121,0,0.6); } }
+        .glow-hover:hover { animation: glow 1.5s infinite alternate; }
+        
+        /* Hero Background */
+        .hero-bg {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.3)), 
+                        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 800'%3E%3Crect fill='%23FF9933' x='0' y='0' width='1200' height='800' rx='20'/%3E%3C/svg%3E");
+            background-size: cover;
+            background-position: center;
+        }
+        
+        /* Loading */
+        .loading-spinner {
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid #FF7B00;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-orange-50 via-amber-50 to-yellow-50 indian-pattern min-h-screen overflow-x-hidden">
+
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect, useRef, useCallback } = React;
+const { motion, AnimatePresence, useInView, useMotionValue } = window.framerMotion;
+
+// ================================================
+// LOADING SCREEN
+// ================================================
+function LoadingScreen({ onComplete }) {
+    const [progress, setProgress] = useState(0);
+    
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setProgress(p => {
+                if (p >= 100) {
+                    clearInterval(timer);
+                    setTimeout(onComplete, 500);
+                    return 100;
+                }
+                return p + Math.random() * 10;
+            });
+        }, 100);
+        return () => clearInterval(timer);
+    }, [onComplete]);
+
+    return (
+        <div className="fixed inset-0 bg-gradient-to-r from-orange-500 to-amber-500 z-50 flex flex-col items-center justify-center text-white">
+            <motion.div 
+                animate={{ rotate: [0, 360] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                className="loading-spinner mb-8"
+            />
+            <div className="text-4xl font-black mb-4 saffron-bg bg-clip-text text-transparent drop-shadow-2xl">
+                Samosa Junction
+            </div>
+            <div className="w-64 bg-white/20 rounded-full h-3 overflow-hidden">
+                <motion.div 
+                    className="h-full saffron-bg rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 0.5 }}
+                />
+            </div>
+            <div className="text-sm mt-2 opacity-75">{Math.round(progress)}%</div>
+        </div>
+    );
+}
+
+// ================================================
+// WHATSAPP FLOATING BUTTON
+// ================================================
+function WhatsAppButton() {
+    const orderWhatsApp = () => {
+        window.open('https://wa.me/919876543210?text=Hi%20Samosa%20Junction!%20I%20want%20to%20order%20samosas%20🥟%20%F0%9F%98%8D', '_blank');
+    };
+
+    return (
+        <motion.button
+            onClick={orderWhatsApp}
+            whileHover={{ scale: 1.1, y: -8 }}
+            whileTap={{ scale: 0.95 }}
+            className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-green-500 text-white rounded-3xl shadow-2xl gold-glow border-4 border-white/50 flex items-center justify-center text-2xl shadow-lg hover:shadow-gold-glow transition-all duration-300"
+        >
+            💬
+        </motion.button>
+    );
+}
+
+// ================================================
+// NAVBAR
+// ================================================
+function Navbar() {
+    const [scrolled, setScrolled] = useState(false);
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const [darkMode, setDarkMode] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => setScrolled(window.scrollY > 50);
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    return (
+        <motion.nav 
+            className={`fixed top-0 w-full z-40 py-4 px-6 transition-all duration-500 ${
+                scrolled ? 'bg-white/95 backdrop-blur-xl shadow-2xl' : 'bg-transparent'
+            }`}
+            initial={{ y: -100 }}
+            animate={{ y: 0 }}
+        >
+            <div className="max-w-7xl mx-auto flex justify-between items-center">
+                {/* Logo */}
+                <motion.div 
+                    whileHover={{ scale: 1.05 }}
+                    className="flex items-center space-x-3 p-2 -m-2 rounded-2xl hover:bg-orange-100 transition-colors"
+                >
+                    <div className="w-14 h-14 saffron-bg rounded-2xl flex items-center justify-center shadow-2xl">
+                        <span className="text-2xl font-black text-white drop-shadow-lg">🥟</span>
+                    </div>
+                    <div>
+                        <h1 className="text-2xl lg:text-3xl font-black bg-gradient-to-r from-orange-500 via-orange-600 to-amber-600 bg-clip-text text-transparent">
+                            Samosa Junction
+                        </h1>
+                        <p className="text-xs lg:text-sm font-medium text-orange-600 hidden sm:block">
+                            Crispy Outside, Legendary Inside
+                        </p>
+                    </div>
+                </motion.div>
+
+                {/* Desktop Menu */}
+                <div className="hidden lg:flex items-center space-x-8">
+                    {['Home', 'Menu', 'About', 'Gallery', 'Contact'].map((item) => (
+                        <a 
+                            key={item} 
+                            href={`#${item.toLowerCase()}`}
+                            className="text-lg font-semibold text-gray-700 hover:text-orange-500 transition-all duration-300 hover:scale-105 px-3 py-2 rounded-xl hover:bg-orange-50"
+                        >
+                            {item}
+                        </a>
+                    ))}
+                </div>
+
+                {/* Desktop Actions */}
+                <div className="hidden lg:flex items-center space-x-4">
+                    <motion.button 
+                        whileHover={{ scale: 1.05 }}
+                        className="px-8 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-gold-glow transition-all duration-300"
+                        onClick={() => window.open('https://wa.me/919876543210', '_blank')}
+                    >
+                        Order Now
+                    </motion.button>
+                    <button 
+                        onClick={() => setDarkMode(!darkMode)}
+                        className="p-3 rounded-2xl bg-gray-100 hover:bg-gray-200 transition-colors"
+                    >
+                        {darkMode ? '☀️' : '🌙'}
+                    </button>
+                </div>
+
+                {/* Mobile Menu Button */}
+                <motion.button 
+                    className="lg:hidden p-2"
+                    onClick={() => setMobileOpen(!mobileOpen)}
+                    whileTap={{ scale: 0.9 }}
+                >
+                    <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </motion.button>
+            </div>
+
+            {/* Mobile Menu */}
+            <AnimatePresence>
+                {mobileOpen && (
+                    <motion.div 
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="lg:hidden bg-white/95 backdrop-blur-xl border-t border-gray-200 overflow-hidden"
+                    >
+                        <div className="px-6 py-8 space-y-6">
+                            {['Home', 'Menu', 'About', 'Gallery', 'Contact'].map((item) => (
+                                <motion.a 
+                                    key={item}
+                                    href={`#${item.toLowerCase()}`}
+                                    className="block text-xl font-bold text-gray-800 hover:text-orange-500 py-3 px-4 rounded-2xl hover:bg-orange-50 transition-all"
+                                    onClick={() => setMobileOpen(false)}
+                                    whileHover={{ x: 10 }}
+                                >
+                                    {item}
+                                </motion.a>
+                            ))}
+                            <motion.button 
+                                whileHover={{ scale: 1.05 }}
+                                className="w-full py-4 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl font-bold text-lg shadow-lg hover:shadow-gold-glow"
+                                onClick={() => {
+                                    setMobileOpen(false);
+                                    window.open('https://wa.me/919876543210', '_blank');
+                                }}
+                            >
+                                Order Now 🥟
+                            </motion.button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.nav>
+    );
+}
+
+// ================================================
+// HERO SECTION
+// ================================================
+function Hero() {
+    return (
+        <section className="relative h-screen flex items-center justify-center hero-bg overflow-hidden">
+            {/* Floating Elements */}
+            <motion.div 
+                className="absolute top-20 left-20 w-32 h-32 bg-white/20 rounded-full blur-xl"
+                animate={{ y: [0, -20, 0], rotate: [0, 180] }}
+                transition={{ duration: 6, repeat: Infinity }}
+            />
+            <motion.div 
+                className="absolute bottom-32 right-24 w-48 h-48 bg-orange-400/20 rounded-full blur-2xl"
+                animate={{ y: [0, 20, 0], rotate: [0, -180] }}
+                transition={{ duration: 8, repeat: Infinity }}
+            />
+
+            <div className="container mx-auto px-6 text-center relative z-10 text-white max-w-5xl">
+                <motion.div 
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1 }}
+                >
+                    <div className="inline-block px-8 py-4 bg-white/20 glass rounded-3xl mb-8 backdrop-blur-sm border border-white/30">
+                        <span className="text-2xl font-bold">🥟 Freshly Made Daily</span>
+                    </div>
+                    <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-6 leading-tight">
+                        India's Favourite
+                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-300 to-red-400 drop-shadow-2xl">
+                            Handmade Samosas
+                        </span>
+                    </h1>
+                    <p className="text-xl md:text-2xl lg:text-3xl mb-12 max-w-3xl mx-auto opacity-95 leading-relaxed">
+                        Crispy golden perfection filled with authentic flavors. 
+                        <strong className="block mt-4 font-bold text-2xl saffron-bg bg-clip-text text-transparent">
+                            Every bite tells a story
+                        </strong>
+                    </p>
+                    
+                    <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
+                        <motion.button 
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="px-12 py-6 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-3xl font-bold text-xl shadow-2xl hover:shadow-gold-glow glass border border-white/30 transition-all duration-300"
+                            onClick={() => window.open('https://wa.me/919876543210', '_blank')}
+                        >
+                            Order Now 🥟
+                        </motion.button>
+                        <motion.button 
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="px-12 py-6 bg-white/20 glass text-white rounded-3xl font-bold text-xl border-2 border-white/40 hover:bg-white/30 backdrop-blur-xl transition-all duration-300"
+                        >
+                            Explore Menu
+                        </motion.button>
+                    </div>
+                </motion.div>
+
+                {/* Scroll Indicator */}
+                <motion.div 
+                    className="absolute bottom-12 left-1/2 transform -translate-x-1/2"
+                    animate={{ y: [0, 20, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                >
+                    <div className="w-6 h-12 border-2 border-white/40 rounded-full flex justify-center items-start p-2">
+                        <motion.div 
+                            className="w-1 h-4 bg-gradient-to-b from-white/80 to-transparent rounded-full mt-1"
+                            animate={{ y: [0, 25, 0] }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                        />
+                    </div>
+                </motion.div>
+            </div>
+        </section>
+    );
+}
+
+// ================================================
+// ABOUT SECTION
+// ================================================
+function About() {
+    const stats = [
+        { value: '10K+', label: 'Happy Customers', icon: '😊' },
+        { value: '25+', label: 'Samosa Varieties', icon: '🥟' },
+        { value: '100%', label: 'Fresh Daily', icon: '🌿' }
+    ];
+
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+    return (
+        <section id="about" className="py-32 px-6 bg-gradient-to-b from-white to-orange-50">
+            <div className="max-w-7xl mx-auto">
+                <motion.div 
+                    ref={ref}
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ duration: 0.8 }}
+                    className="text-center mb-24"
+                >
+                    <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+                        Our Story
+                    </h2>
+                    <p className="text-xl md:text-2xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
+                        From a small kitchen in Bardhaman to <strong>India's most loved samosas</strong>. 
+                        Every samosa is handcrafted with love, using family recipes passed down through generations. 
+                        We source the freshest ingredients and spices daily to create that perfect <em>crispy outside, legendary inside</em> experience.
+                    </p>
+                </motion.div>
+
+                <div className="grid md:grid-cols-3 gap-8 mb-24">
+                    {stats.map((stat, index) => (
+                        <motion.div
+                            key={stat.label}
+                            initial={{ opacity: 0, scale: 0.8, y: 50 }}
+                            animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+                            transition={{ duration: 0.8, delay: index * 0.2 }}
+                            whileHover={{ scale: 1.05, y: -10 }}
+                            className="group p-10 rounded-3xl bg-white/70 glass shadow-xl hover:shadow-gold-glow transition-all duration-500 border border-orange-100/50 hover:border-orange-200"
+                        >
+                            <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">{stat.icon}</div>
+                            <div className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-600 mb-4">
+                                {stat.value}
+                            </div>
+                            <div className="text-xl font-bold text-gray-800 group-hover:text-orange-600 transition-colors">
+                                {stat.label}
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+// ================================================
+// MENU SECTION
+// ================================================
+function Menu() {
+    const menuItems = [
+        { 
+            name: 'Classic Aloo Samosa', 
+            price: '₹25', 
+            desc: 'Spicy potato with traditional Indian spices', 
+            icon: '🥔',
+            color: 'from-orange-500 to-amber-500'
+        },
+        { 
+            name: 'Paneer Tikka Samosa', 
+            price: '₹35', 
+            desc: 'Smoky marinated paneer with mint chutney', 
+            icon: '🧀',
+            color: 'from-green-500 to-emerald-500'
+        },
+        { 
+            name: 'Cheese Corn Samosa', 
+            price: '₹30', 
+            desc: 'Melting cheese with sweet corn filling', 
+            icon: '🧀🌽',
+            color: 'from-yellow-400 to-amber-400'
+        },
+        { 
+            name: 'Chicken Keema Samosa', 
+            price: '₹40', 
+            desc: 'Minced chicken with aromatic spices', 
+            icon: '🍗',
+            color: 'from-red-500 to-pink-500'
+        },
+        { 
+            name: 'Chocolate Dessert Samosa', 
+            price: '₹45', 
+            desc: 'Crispy shell with molten chocolate center', 
+            icon: '🍫',
+            color: 'from-purple-500 to-pink-500'
+        },
+        { 
+            name: 'Mini Party Samosas (12 pcs)', 
+            price: '₹250', 
+            desc: 'Assorted mini samosas for celebrations', 
+            icon: '🎉',
+            color: 'from-indigo-500 to-blue-500'
+        }
+    ];
+
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true });
+
+    return (
+        <section id="menu" className="py-32 px-6 bg-gradient-to-b from-yellow-50 to-orange-50">
+            <div className="max-w-7xl mx-auto">
+                <motion.div 
+                    ref={ref}
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    className="text-center mb-24"
+                >
+                    <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+                        Our Menu
+                    </h2>
+                    <p className="text-xl md:text-2xl text-gray-700 max-w-3xl mx-auto">
+                        Crispy, golden, unforgettable. Pick your favorite flavor
+                    </p>
+                </motion.div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {menuItems.map((item, index) => (
+                        <motion.div
+                            key={item.name}
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.6, delay: index * 0.1 }}
+                            whileHover={{ y: -20, scale: 1.02 }}
+                            className="group cursor-pointer overflow-hidden rounded-3xl bg-white shadow-2xl hover:shadow-gold-glow transition-all duration-700 border border-gray-100 hover:border-orange-200"
+                        >
+                            <div className="p-10 text-center relative overflow-hidden">
+                                <div 
+                                    className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-10 group-hover:opacity-20 transition-opacity`}
+                                />
+                                <motion.div 
+                                    className="text-7xl mb-8 relative z-10 group-hover:scale-110 transition-transform duration-500"
+                                    animate={{ rotate: [0, 5, -5, 0] }}
+                                    transition={{ duration: 3, repeat: Infinity }}
+                                >
+                                    {item.icon}
+                                </motion.div>
+                                <h3 className="text-3xl font-black text-gray-900 mb-4 relative z-10 group-hover:text-orange-600 transition-colors">
+                                    {item.name}
+                                </h3>
+                                <p className="text-xl text-gray-600 mb-8 relative z-10 leading-relaxed">
+                                    {item.desc}
+                                </p>
+                                <div className="flex items-center justify-center space-x-4 mb-8 relative z-10">
+                                    <span className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-amber-600">
+                                        {item.price}
+                                    </span>
+                                    <motion.button 
+                                        whileHover={{ scale: 1.1 }}
+                                        className="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-2xl font-bold shadow-lg hover:shadow-gold-glow transition-all duration-300 relative z-10"
+                                        onClick={() => window.open('https://wa.me/919876543210', '_blank')}
+                                    >
+                                        Order Now
+                                    </motion.button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+// ================================================
+// FEATURES SECTION
+// ================================================
+function Features() {
+    const features = [
+        { icon: '🥬', title: 'Fresh Ingredients', desc: 'Sourced daily from local farms' },
+        { icon: '🧼', title: 'Hygienic Kitchen', desc: 'World-class hygiene standards' },
+        { icon: '🚀', title: 'Fast Delivery', desc: 'Hot & crispy at your doorstep' },
+        { icon: '🇮🇳', title: 'Authentic Taste', desc: 'Traditional family recipes' },
+        { icon: '🎊', title: 'Event Catering', desc: 'Perfect for weddings & parties' }
+    ];
+
+    const ref = useRef(null);
+    const isInView = useInView(ref, { once: true });
+
+    return (
+        <section className="py-32 px-6 bg-white">
+            <div className="max-w-7xl mx-auto">
+                <motion.div 
+                    ref={ref}
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    className="text-center mb-24"
+                >
+                    <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+                        Why Choose Us?
+                    </h2>
+                </motion.div>
+
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+                    {features.map((feature, index) => (
+                        <motion.div
+                            key={feature.title}
+                            initial={{ opacity: 0, y: 50 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : {}}
+                            transition={{ duration: 0.6, delay: index * 0.1 }}
+                            whileHover={{ scale: 1.05, y: -10 }}
+                            className="p-10 rounded-3xl bg-gradient-to-br from-orange-50 to-amber-50 shadow-xl hover:shadow-gold-glow transition-all duration-500 border border-orange-100 hover:border-orange-200 group hover:bg-white"
+                        >
+                            <div className="text-5xl mb-6 group-hover:scale-110 transition-transform">{feature.icon}</div>
+                            <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-orange-600 transition-colors">
+                                {feature.title}
+                            </h3>
+                            <p className="text-gray-600 leading-relaxed">{feature.desc}</p>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+// ================================================
+// TESTIMONIALS
+// ================================================
+function Testimonials() {
+    const testimonials = [
+        { 
+            text: "Best samosas I've ever had! The paneer tikka is absolutely legendary. Delivery was super fast too!", 
+            name: "Priya Sharma", 
+            role: "Food Blogger", 
+            rating: 5 
+        },
+        { 
+            text: "Ordered for our office party. Everyone loved them! Will definitely order again.", 
+            name: "Rahul Patel", 
+            role: "Manager", 
+            rating: 5 
+        },
+        { 
+            text: "Chocolate samosa changed my life. Crispy outside, molten chocolate inside. Perfection!", 
+            name: "Anita Das", 
+            role: "Student", 
+            rating: 5 
+        }
+    ];
+
+    const [current, setCurrent] = useState(0);
+    const ref = useRef(null);
+    const isInView = useInView(ref);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrent((prev) => (prev + 1) % testimonials.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <section id="testimonials" className="py-32 px-6 bg-gradient-to-b from-orange-50 to-yellow-50">
+            <div className="max-w-4xl mx-auto">
+                <motion.div 
+                    ref={ref}
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    className="text-center mb-24"
+                >
+                    <h2 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+                        What People Say
+                    </h2>
+                    <p className="text-2xl text-gray-700">Loved by thousands across Bardhaman</p>
+                </motion.div>
+
+                <div className="relative">
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={current}
+                            initial={{ opacity: 0, x: 100, scale: 0.9 }}
+                            animate={{ opacity: 1, x: 0, scale: 1 }}
+                            exit={{ opacity: 0, x: -100, scale: 0.9 }}
+                            transition={{ duration: 0.7 }}
+                            className="p-12 rounded-4xl bg-white/40 glass shadow-2xl border border-white/30 backdrop-blur-xl text-center max-w-4xl mx-auto"
+                        >
+                            {/* Stars */}
+                            <div className="flex justify-center mb-8">
+                                {[...Array(5)].map((_, i) => (
+                                    <span key={i} className={`text-3xl ${i < testimonials[current].rating ? 'text-yellow-400' : 'text-gray-300'}`}>
+                                        ⭐
+                                    </span>
+                                ))}
+                            </div>
+                            
+                            <blockquote className="text-2xl font-semibold text-gray-800 mb-12 italic leading-relaxed">
+                                "{testimonials[current].text}"
+                            </blockquote>
+                            <div className="text-xl font-bold text-gray-900">
+                                — {testimonials[current].name}
+                                <div className="text-lg text-gray-600 font-medium">{testimonials[current].role}</div>
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
+                    
+                    {/* Indicators */}
+                    <div className="flex justify-center mt-12 space-x-4">
+                        {testimonials.map((_, index) => (
+                            <motion.button
+                                key={index}
+                                onClick={() => setCurrent(index)}
+                                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                                    current === index 
+                                        ? 'w-16 bg-gradient-to-r from-orange-500 to-amber-500 shadow-lg' 
+                                        : 'bg-gray-300 hover:bg-gray-400'
+                                }`}
+                                whileHover={{ scale: 1.2 }}
+                            />
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+}
+
+// ================================================
+// GALLERY SECTION
+// ================================================
+function Gallery() {
+    const images = [
+        'https://images.unsplash.com/photo-1621996346565-e3dbc353d2e5?w=400',
+        'https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400',
+        'https://images.unsplash.com/photo-1541599468178-7ce9c2a6dc3b?w=400',
+        'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400',
+        'https://images.unsplash.com/photo-1615484478261-5e1f7e0c874e?w=400',
+        'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400'
+    ];
+
+    const ref = useRef(null);
+    const isInView = useInView(ref);
+
+    return (
+        <section id="gallery" className="py-32 px-6 bg-gradient-to-t from-orange-50 to-yellow-50">
+            <div className="max-w-7xl mx-auto">
+                <motion.div 
+                    ref={ref}
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    className="text-center mb-24"
+                >
+                    <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+                        Gallery
+                    </h2>
+                    <p className="text-2xl text-gray-700">Crispy moments captured</p>
+                </motion.div>
+
+                <div className="columns-1 md:columns-2 lg:columns-3 gap-6 px-4">
+                    {images.map((src, index) => (
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={isInView ? { opacity: 1, scale: 1 } : {}}
+                            transition={{ duration: 0.6, delay: index * 0.1 }}
+                            whileHover={{ scale: 1.05 }}
+                            className="mb-6 break-inside-avoid rounded-3xl overflow-hidden shadow-2xl group hover:shadow-gold-glow transition-all duration-500 cursor-pointer"
+                        >
+                            <div 
+                                className="w-full h-80 bg-gradient-to-br from-orange-400 to-amber-500 bg-cover bg-center group-hover:scale-110 transition-transform duration-700 relative overflow-hidden"
+                                style={{ backgroundImage: `url(${src})` }}
+                            >
+                                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all duration-500" />
+                                <div className="absolute bottom-6 left-6 right-6">
+                                    <motion.button 
+                                        whileHover={{ scale: 1.1 }}
+                                        className="px-6 py-3 bg-white text-orange-500 rounded-2xl font-bold shadow-lg hover:shadow-gold-glow transition-all duration-300"
+                                    >
+                                        View Reel
+                                    </motion.button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
+// ================================================
+// CONTACT SECTION
+// ================================================
+function Contact() {
+    const [formData, setFormData] = useState({ name: '', phone: '', email: '', message: '' });
+    const [submitted, setSubmitted] = useState(false);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Simulate form submission
+        setTimeout(() => {
+            setSubmitted(true);
+            setFormData({ name: '', phone: '', email: '', message: '' });
+        }, 1000);
+    };
+
+    const ref = useRef(null);
+    const isInView = useInView(ref);
+
+    return (
+        <section id="contact" className="py-32 px-6 bg-gradient-to-b from-white via-orange-50 to-amber-50">
+            <div className="max-w-6xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+                {/* Contact Info */}
+                <motion.div 
+                    ref={ref}
+                    initial={{ opacity: 0, x: -50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    className="space-y-8"
+                >
+                    <h2 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-orange-500 to-amber-600 bg-clip-text text-transparent">
+                        Get In Touch
+                    </h2>
+                    
+                    <div className="space-y-6">
+                        <div className="flex items-start space-x-4 p-6 rounded-3xl bg-white shadow-xl hover:shadow-gold-glow transition-all">
+                            <div className="text-3xl mt-1">📞</div>
+                            <div>
+                                <h3 className="font-bold text-xl text-gray-900">Phone</h3>
+                                <a href="tel:+919876543210" className="text-2xl font-bold text-orange-500 hover:text-orange-600 transition-colors">
+                                    +91 98765 43210
+                                </a>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start space-x-4 p-6 rounded-3xl bg-white shadow-xl hover:shadow-gold-glow transition-all">
+                            <div className="text-3xl mt-1">✉️</div>
+                            <div>
+                                <h3 className="font-bold text-xl text-gray-900">Email</h3>
+                                <a href="mailto:hello@samosajunction.com" className="text-xl font-semibold text-gray-700 hover:text-orange-500 transition-colors">
+                                    hello@samosajunction.com
+                                </a>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start space-x-4 p-6 rounded-3xl bg-white shadow-xl hover:shadow-gold-glow transition-all">
+                            <div className="text-3xl mt-1">📍</div>
+                            <div>
+                                <h3 className="font-bold text-xl text-gray-900">Address</h3>
+                                <p className="text-lg font-semibold text-gray-700">
+                                    GT Road, Bardhaman<br/>
+                                    West Bengal, India 713101
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <motion.button 
+                        whileHover={{ scale: 1.05 }}
+                        className="w-full lg:w-auto px-12 py-6 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-3xl font-bold text-xl shadow-2xl hover:shadow-gold-glow transition-all duration-300"
+                        onClick={() => window.open('https://wa.me/919876543210', '_blank')}
+                    >
+                        Order on WhatsApp 🥟
+                    </motion.button>
+                </motion.div>
+
+                {/* Contact Form */}
+                <motion.div 
+                    initial={{ opacity: 0, x: 50 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    className="space-y-6"
+                >
+                    <div className="p-10 rounded-3xl bg-white/70 glass shadow-2xl backdrop-blur-xl border border-white/30">
+                        <h3 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+                            Send us a message
+                        </h3>
+                        
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div>
+                                <input 
+                                    type="text" 
+                                    placeholder="Your Name"
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                    className="w-full p-5 rounded-2xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none transition-all text-lg bg-white/50 backdrop-blur-sm"
+                                    required
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <input 
+                                    type="tel" 
+                                    placeholder="Phone"
+                                    value={formData.phone}
+                                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                                    className="p-5 rounded-2xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none transition-all bg-white/50 backdrop-blur-sm"
+                                    required
+                                />
+                                <input 
+                                    type="email" 
+                                    placeholder="Email"
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                    className="p-5 rounded-2xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none transition-all bg-white/50 backdrop-blur-sm"
+                                />
+                            </div>
+                            <textarea 
+                                rows={4}
+                                placeholder="Your Message"
+                                value={formData.message}
+                                onChange={(e) => setFormData({...formData, message: e.target.value})}
+                                className="w-full p-5 rounded-2xl border-2 border-gray-200 focus:border-orange-500 focus:outline-none transition-all resize-vertical bg-white/50 backdrop-blur-sm"
+                            />
+                            
+                            <motion.button 
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                type="submit"
+                                className="w-full py-6 bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-3xl font-bold text-xl shadow-2xl hover:shadow-gold-glow transition-all duration-300"
+                                disabled={submitted}
+                            >
+                                {submitted ? '✅ Message Sent!' : 'Send Message'}
+                            </motion.button>
+                        </form>
+                    </div>
+                </motion.div>
+            </div>
+        </section>
+    );
+}
+
+// ================================================
+// FOOTER
+// ================================================
+function Footer() {
+    return (
+        <footer className="bg-gradient-to-r from-gray-900 to-orange-900 py-16 px-6 text-white relative overflow-hidden">
+            <div className="absolute inset-0 bg-black/20" />
+            <div className="max-w-7xl mx-auto relative z-10">
+                <div className="grid md:grid-cols-4 gap-12 mb-12">
+                    {/* Logo & Description */}
+                    <div className="md:col-span-2">
+                        <motion.div 
+                            whileHover={{ scale: 1.02 }}
+                            className="flex items-center space-x-4 mb-8"
+                        >
+                            <div className="w-16 h-16 saffron-bg rounded-3xl flex items-center justify-center shadow-2xl">
+                                <span className="text-2xl font-black">🥟</span>
+                            </div>
+                            <div>
+                                <h3 className="text-3xl font-black">Samosa Junction</h3>
+                                <p className="text-orange-400 font-bold opacity-90">Crispy Outside, Legendary Inside</p>
+                            </div>
+                        </motion.div>
+                        <p className="text-gray-300 leading-relaxed mb-6 max-w-md">
+                            Bringing authentic handmade samosas to Bardhaman since 2020. 
+                            Every samosa tells a story of tradition and love.
+                        </p>
+                        <div className="flex space-x-4">
+                            {['📞 +91 98765 43210', '✉️ hello@samosajunction.com'].map((contact, i) => (
+                                <motion.a 
+                                    key={i}
+                                    href={i === 0 ? 'tel:+919876543210' : 'mailto:hello@samosajunction.com'}
+                                    whileHover={{ scale: 1.05 }}
+                                    className="px-4 py-2 bg-white/10 rounded-2xl hover:bg-white/20 transition-all flex items-center space-x-2"
+                                >
+                                    <span>{contact.split(' ')[0]}</span>
+                                    <span className="font-bold">{contact.split(' ')[1]}</span>
+                                </motion.a>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Quick Links */}
+                    <div>
+                        <h4 className="text-xl font-bold mb-6">Quick Links</h4>
+                        <ul className="space-y-3">
+                            {['Home', 'Menu', 'About', 'Gallery', 'Contact'].map((item) => (
+                                <li key={item}>
+                                    <a href={`#${item.toLowerCase()}`} className="text-gray-300 hover:text-white transition-colors block py-1">
+                                        {item}
+                                    </a>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    {/* Business Hours */}
+                    <div>
+                        <h4 className="text-xl font-bold mb-6">Hours</h4>
+                        <ul className="space-y-2 text-gray-300">
+                            <li>Monday - Friday: 10AM - 10PM</li>
+                            <li>Saturday: 9AM - 11PM</li>
+                            <li>Sunday: 11AM - 9PM</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div className="border-t border-white/20 pt-12 text-center text-gray-400 text-sm">
+                    <p>&copy; 2024 Samosa Junction. All rights reserved. Made with ❤️ in Bardhaman, West Bengal.</p>
+                    <div className="flex justify-center space-x-6 mt-6">
+                        {['📸 Instagram', '🐦 Twitter', '📘 Facebook'].map((social, i) => (
+                            <motion.a 
+                                key={i}
+                                href="#"
+                                whileHover={{ scale: 1.2, y: -2 }}
+                                className="hover:text-orange-400 transition-all"
+                            >
+                                {social}
+                            </motion.a>
+                        ))}
+                    </div>
+                </div>
+            </div>
+        </footer>
+    );
+}
+
+// ================================================
+// MAIN APP
+// ================================================
+function App() {
+    const [loadingComplete, setLoadingComplete] = useState(false);
+
+    return (
+        <div className="min-h-screen">
+            {!loadingComplete && (
+                <LoadingScreen onComplete={() => setLoadingComplete(true)} />
+            )}
+            
+            <AnimatePresence>
+                {loadingComplete && (
+                    <>
+                        <Navbar />
+                        <Hero />
+                        <About />
+                        <Menu />
+                        <Features />
+                        <Testimonials />
+                        <Gallery />
+                        <Contact />
+                        <Footer />
+                        <WhatsAppButton />
+                    </>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}
+
+// Render
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+
+</body>
+</html>
